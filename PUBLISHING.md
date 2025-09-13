@@ -41,7 +41,7 @@ npm publish --access public
 1. **Update package.json:**
    ```json
    {
-     "name": "@your-username/gemini-image-mcp",
+     "name": "@Pritish053/gemini-image-mcp",
      "publishConfig": {
        "registry": "https://npm.pkg.github.com"
      }
@@ -62,7 +62,7 @@ npm publish --access public
 
 Users can install directly from a Git repository:
 ```bash
-npm install -g git+https://github.com/your-username/gemini-image-mcp.git
+npm install -g git+https://github.com/Pritish053/gemini-image-mcp.git
 ```
 
 ## Installation Methods for Users
@@ -74,12 +74,12 @@ npm install -g gemini-image-mcp
 
 ### Method 2: Using the Install Script
 ```bash
-curl -fsSL https://raw.githubusercontent.com/your-username/gemini-image-mcp/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Pritish053/gemini-image-mcp/main/install.sh | bash
 ```
 
 ### Method 3: Local Development Install
 ```bash
-git clone https://github.com/your-username/gemini-image-mcp.git
+git clone https://github.com/Pritish053/gemini-image-mcp.git
 cd gemini-image-mcp
 npm install
 npm run build

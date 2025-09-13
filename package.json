@@ -34,12 +34,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/gemini-image-mcp.git"
+    "url": "https://github.com/Pritish053/gemini-image-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/gemini-image-mcp/issues"
+    "url": "https://github.com/Pritish053/gemini-image-mcp/issues"
   },
-  "homepage": "https://github.com/your-username/gemini-image-mcp#readme",
+  "homepage": "https://github.com/Pritish053/gemini-image-mcp#readme",
   "author": "Pritish Maheta",
   "license": "MIT",
   "dependencies": {
