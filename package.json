@@ -1,10 +1,10 @@
 {
-  "name": "gemini-image-mcp",
+  "name": "@pritishmaheta/gemini-image-mcp",
   "version": "1.0.0",
   "description": "MCP server for image generation and modification using Google Gemini API",
   "main": "dist/index.js",
   "bin": {
-    "gemini-image-mcp": "./dist/index.js"
+    "gemini-image-mcp": "dist/index.js"
   },
   "type": "module",
   "files": [
@@ -34,7 +34,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Pritish053/gemini-image-mcp.git"
+    "url": "git+https://github.com/Pritish053/gemini-image-mcp.git"
   },
   "bugs": {
     "url": "https://github.com/Pritish053/gemini-image-mcp/issues"
@@ -43,17 +43,20 @@
   "author": "Pritish Maheta",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.18.0",
     "@google/generative-ai": "^0.21.0",
-    "dotenv": "^16.4.5",
-    "sharp": "^0.33.5"
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@types/node": "^22.10.5",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
     "eslint": "^9.18.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
