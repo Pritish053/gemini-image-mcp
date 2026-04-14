@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Publish under `@pritishmaheta` npm scope.
+- Lazy-load `dotenv` only when a `.env` file is present, cutting cold-start
+  work for MCP clients that inject env vars directly.
+- Tighten tool-argument validation and surface clearer error messages to the
+  calling LLM.
+- Strengthen TypeScript types in `gemini-client` and shared `types.ts`,
+  eliminating remaining `any` usages in public surfaces.
+
+### Removed
+- Drop unused `sharp` dependency (saves ~15 MB of native binaries in
+  `node_modules`, smaller install for global npm users).
+
+### Added
+- Declare `@eslint/js` as an explicit devDependency (previously relied on a
+  transitive copy).
+- Declare `engines.node >=18.0.0` to match documented requirements.
+- Update `install.sh` to install the scoped package name.
+
 ## [1.0.0] - 2025-09-14
 
 ### Added
