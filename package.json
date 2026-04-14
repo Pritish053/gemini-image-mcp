@@ -1,10 +1,10 @@
 {
-  "name": "gemini-image-mcp",
+  "name": "@pritishmaheta/gemini-image-mcp",
   "version": "1.0.0",
   "description": "MCP server for image generation and modification using Google Gemini API",
   "main": "dist/index.js",
   "bin": {
-    "gemini-image-mcp": "./dist/index.js"
+    "gemini-image-mcp": "dist/index.js"
   },
   "type": "module",
   "files": [
@@ -34,7 +34,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Pritish053/gemini-image-mcp.git"
+    "url": "git+https://github.com/Pritish053/gemini-image-mcp.git"
   },
   "bugs": {
     "url": "https://github.com/Pritish053/gemini-image-mcp/issues"
