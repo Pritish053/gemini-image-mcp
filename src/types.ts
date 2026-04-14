@@ -42,22 +42,41 @@ export interface GeneratedImage {
     prompt?: string;
     model?: string;
     timestamp?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
+}
+
+export interface BoundingBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface DetectedObject {
+  name: string;
+  confidence: number;
+  boundingBox?: BoundingBox;
+}
+
+export interface DetectedColor {
+  hex: string;
+  name: string;
+  percentage: number;
 }
 
 export interface AnalysisResult {
   description?: string;
-  objects?: Array<{ name: string; confidence: number; boundingBox?: any }>;
+  objects?: DetectedObject[];
   text?: string[];
-  colors?: Array<{ hex: string; name: string; percentage: number }>;
+  colors?: DetectedColor[];
   emotions?: Array<{ emotion: string; confidence: number }>;
   comprehensive?: {
     description: string;
-    objects: any[];
+    objects: DetectedObject[];
     text: string[];
-    colors: any[];
-    emotions: any[];
+    colors: DetectedColor[];
+    emotions: Array<{ emotion: string; confidence: number }>;
     tags: string[];
   };
 }

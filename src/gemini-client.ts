@@ -1,5 +1,10 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 import {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+  type GenerativeModel,
+} from '@google/generative-ai';
+import type {
   GeminiConfig,
   ImageGenerationOptions,
   ImageModificationOptions,
@@ -7,12 +12,12 @@ import {
   GeneratedImage,
   AnalysisResult,
   StyleTransferOptions,
-  BatchGenerationOptions
+  BatchGenerationOptions,
 } from './types.js';
 
 export class GeminiImageClient {
   private genAI: GoogleGenerativeAI;
-  private model: any;
+  private model: GenerativeModel;
   private config: GeminiConfig;
   private requestTimestamps: number[] = [];
 
@@ -244,7 +249,10 @@ export class GeminiImageClient {
     }
   }
 
-  private extractImagesFromResponse(_response: any, options: any): GeneratedImage[] {
+  private extractImagesFromResponse(
+    _response: unknown,
+    options: { prompt?: string },
+  ): GeneratedImage[] {
     // Note: This is a simplified implementation.
     // The actual Gemini API response structure for images may differ
     const images: GeneratedImage[] = [];
@@ -298,7 +306,7 @@ export class GeminiImageClient {
         default:
           result.description = text;
       }
-    } catch (error) {
+    } catch {
       result.description = text;
     }
 
@@ -362,14 +370,14 @@ export class GeminiImageClient {
     return result;
   }
 
-  private parseComprehensive(text: string): any {
+  private parseComprehensive(text: string): NonNullable<AnalysisResult['comprehensive']> {
     return {
       description: text,
       objects: [],
       text: [],
       colors: [],
       emotions: [],
-      tags: []
+      tags: [],
     };
   }
 }
