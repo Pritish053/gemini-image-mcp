@@ -6,19 +6,53 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { config } from 'dotenv';
+import { existsSync } from 'node:fs';
 import { GeminiImageClient } from './gemini-client.js';
-import {
+import type {
   ImageGenerationOptions,
   ImageModificationOptions,
   ImageAnalysisOptions,
   BatchGenerationOptions,
   StyleTransferOptions,
-  GeminiConfig
+  GeminiConfig,
 } from './types.js';
 
-// Load environment variables
-config();
+// Only pay the cost of dotenv when a .env file is actually present.
+// MCP clients (Claude Desktop, etc.) inject env vars directly, so most
+// production runs never need to parse a dotfile.
+if (existsSync('.env')) {
+  const { config } = await import('dotenv');
+  config();
+}
+
+const VALID_SAFETY_LEVELS = ['LOW', 'MEDIUM', 'HIGH', 'BLOCK_NONE'] as const;
+type SafetyLevel = (typeof VALID_SAFETY_LEVELS)[number];
+
+function parseSafetyLevel(value: string | undefined): SafetyLevel {
+  if (value && (VALID_SAFETY_LEVELS as readonly string[]).includes(value)) {
+    return value as SafetyLevel;
+  }
+  return 'MEDIUM';
+}
+
+function parsePositiveInt(value: string | undefined, fallback: number): number {
+  if (!value) return fallback;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function requireString(
+  args: Record<string, unknown>,
+  key: string,
+  toolName: string,
+): void {
+  const value = args[key];
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error(
+      `Tool "${toolName}" requires "${key}" to be a non-empty string`,
+    );
+  }
+}
 
 class GeminiImageMCPServer {
   private server: Server;
@@ -36,8 +70,8 @@ class GeminiImageMCPServer {
     const geminiConfig: GeminiConfig = {
       apiKey,
       model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-image-preview',
-      safetyLevel: (process.env.SAFETY_LEVEL as any) || 'MEDIUM',
-      maxRequestsPerMinute: parseInt(process.env.MAX_REQUESTS_PER_MINUTE || '10')
+      safetyLevel: parseSafetyLevel(process.env.SAFETY_LEVEL),
+      maxRequestsPerMinute: parsePositiveInt(process.env.MAX_REQUESTS_PER_MINUTE, 10),
     };
 
     this.geminiClient = new GeminiImageClient(geminiConfig);
@@ -211,21 +245,38 @@ class GeminiImageMCPServer {
       const { name, arguments: args } = request.params;
 
       try {
+        if (!args || typeof args !== 'object') {
+          throw new Error(`Tool "${name}" requires an arguments object`);
+        }
+        const a = args as Record<string, unknown>;
+
         switch (name) {
           case 'generateImage':
-            return await this.handleGenerateImage(args as unknown as ImageGenerationOptions);
+            requireString(a, 'prompt', name);
+            return await this.handleGenerateImage(a as unknown as ImageGenerationOptions);
 
           case 'modifyImage':
-            return await this.handleModifyImage(args as unknown as ImageModificationOptions);
+            requireString(a, 'imageBase64', name);
+            requireString(a, 'instructions', name);
+            return await this.handleModifyImage(a as unknown as ImageModificationOptions);
 
           case 'analyzeImage':
-            return await this.handleAnalyzeImage(args as unknown as ImageAnalysisOptions);
+            requireString(a, 'imageBase64', name);
+            return await this.handleAnalyzeImage(a as unknown as ImageAnalysisOptions);
 
           case 'batchGenerate':
-            return await this.handleBatchGenerate(args as unknown as BatchGenerationOptions);
+            if (!Array.isArray(a.prompts) || a.prompts.length === 0) {
+              throw new Error(`Tool "${name}" requires a non-empty "prompts" array`);
+            }
+            if (!a.prompts.every((p) => typeof p === 'string' && p.length > 0)) {
+              throw new Error(`Tool "${name}" "prompts" entries must be non-empty strings`);
+            }
+            return await this.handleBatchGenerate(a as unknown as BatchGenerationOptions);
 
           case 'applyStyleTransfer':
-            return await this.handleStyleTransfer(args as unknown as StyleTransferOptions);
+            requireString(a, 'imageBase64', name);
+            requireString(a, 'style', name);
+            return await this.handleStyleTransfer(a as unknown as StyleTransferOptions);
 
           default:
             throw new Error(`Unknown tool: ${name}`);
@@ -236,10 +287,10 @@ class GeminiImageMCPServer {
           content: [
             {
               type: 'text',
-              text: `Error: ${errorMessage}`
-            }
+              text: `Error: ${errorMessage}`,
+            },
           ],
-          isError: true
+          isError: true,
         };
       }
     });
