@@ -25,8 +25,8 @@ fi
 echo "✅ Node.js version: $NODE_VERSION"
 
 # Install the package globally
-echo "📦 Installing gemini-image-mcp globally..."
-npm install -g gemini-image-mcp
+echo "📦 Installing @pritishmaheta/gemini-image-mcp globally..."
+npm install -g @pritishmaheta/gemini-image-mcp
 
 echo "✅ Installation complete!"
 echo ""
